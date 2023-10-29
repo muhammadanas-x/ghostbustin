@@ -20,8 +20,3 @@ export default function Gb() {
     </>
   )
 }
-
-TODO:
-Instructions
-Improve ghost tethered Effect 
-Game over
