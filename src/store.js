@@ -24,6 +24,15 @@ export const useGameStore = create((set) => ({
 
   trapBB: null,
   setTrapBB: (trapBB) => set({ trapBB }),
+
+  audioCtx: null,
+  setAudioCtx: (audioCtx) => set({ audioCtx }),
+
+  audioElement: null,
+  setAudioElement: (audioElement) => set({ audioElement }),
+
+  introDone: false,
+  setIntroDone: (introDone) => set({ introDone }),
 }));
 
 export const useTargetStore = create(subscribeWithSelector((set) => ({

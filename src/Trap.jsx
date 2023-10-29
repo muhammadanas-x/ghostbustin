@@ -5,6 +5,7 @@ import { Box2, Vector2, MeshStandardMaterial, SRGBColorSpace, AdditiveBlending, 
 import { useGLTF, useTexture } from '@react-three/drei';
 import { useShallow } from 'zustand/react/shallow';
 import gsap from 'gsap';
+import { loadAudio, playSample } from './helpers/audio';
 
 const floor = -2.4;
 
@@ -66,27 +67,52 @@ export default function Trap() {
   const rdRef = React.useRef();
   const bbRef = React.useRef(new Box2());
   const tlRef = React.useRef();
+  const [buffers, setBuffers] = React.useState();
 
-  const { setTrapBB, trappedTotal, trapBB} = useGameStore(
+  const { setTrapBB, trappedTotal, trapBB, audioCtx} = useGameStore(
     useShallow((s) => ({ 
       setTrapBB: s.setTrapBB,
       trappedTotal: s.trappedTotal,
       trapBB: s.trapBB,
+      audioCtx: s.audioCtx,
     })
   ));
+
+  React.useEffect(() => {
+    if (audioCtx) {
+      const loadAudioFile = async () => {
+        const buf = await loadAudio(audioCtx, '/close.mp3');
+        setBuffers((s) => ({...s, trap: buf}));
+      };
+      loadAudioFile();
+    }
+  }, [setBuffers, audioCtx])
+
+  React.useEffect(() => {
+    if (audioCtx) {
+      const loadAudioFile = async () => {
+        const buf = await loadAudio(audioCtx, '/open.mp3');
+        setBuffers((s) => ({...s, open: buf}));
+      };
+      loadAudioFile();
+    }
+  }, [setBuffers, audioCtx])
 
   React.useEffect(() => {
     const {current: mat} = matRef;
     const {current: ld} = ldRef;
     const {current: rd} = rdRef;
-    //if (trappedTotal % 3 === 0 && trappedTotal > 0) {
+    if (trappedTotal > 0) {
+      setTimeout(() => {
+        playSample(audioCtx, buffers.trap);
+      }, 600);
       if (tlRef.current) tlRef.current.kill();
       tlRef.current = returnTrapTL(gRef.current, ld, rd, mat, () => {
         setTrapBB(null);
       });
-    //}
+    }
 
-  }, [trappedTotal, setTrapBB]);
+  }, [trappedTotal, setTrapBB, buffers, audioCtx]);
 
   React.useEffect(() => {
     const deployTrap = (e) => {
@@ -102,6 +128,9 @@ export default function Trap() {
           bb.setFromCenterAndSize(new Vector2(group.position.x, group.position.y), new Vector2(2, 4));
           setTrapBB(bb);
         });
+        setTimeout(() => {
+          playSample(audioCtx, buffers.open);
+        }, 600);
       }
     }
     window.addEventListener('keydown', deployTrap);
@@ -109,7 +138,7 @@ export default function Trap() {
     return () => {
       window.removeEventListener('keydown', deployTrap);
     };
-  }, [setTrapBB, trapBB]);
+  }, [setTrapBB, trapBB, buffers, audioCtx]);
 
   const { nodes } = useGLTF('/trap.glb');
   const colTex = useTexture('/guncol.webp');
@@ -138,7 +167,7 @@ export default function Trap() {
         <mesh ref={ldRef} geometry={nodes.doorl.geometry} material={tMat} position={[-0.178, 0.177, -0.205]} />
         <mesh ref={rdRef} geometry={nodes.doorr.geometry} material={tMat} position={[0.178, 0.177, -0.205]} />
         <mesh geometry={nodes.glow.geometry} visible={true}>
-          <trapGlowMat ref={matRef} blending={AdditiveBlending} transparent side={BackSide} />
+          <trapGlowMat ref={matRef} blending={AdditiveBlending} transparent side={BackSide} depthTest={false} depthWrite={false} />
         </mesh>
       </group>      
     </group>

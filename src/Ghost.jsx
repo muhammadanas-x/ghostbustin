@@ -6,13 +6,14 @@ import { useGLTF, useTexture } from '@react-three/drei';
 import { damp3 } from 'maath/easing';
 import gsap from 'gsap';
 import { AdditiveBlending, Vector2 } from 'three';
+import { MeshDistortMat } from './mats/MeshDistortMat';
 
 const randX = gsap.utils.random(-10, -3, .1, true);
 const randXFlip = gsap.utils.random(3, 10, .1, true);
 const randX2 = 'random(3, 6)';
 const randX2Flip = 'random(-3, -6)';
 const randY = gsap.utils.random(0, 1, .1, true);
-const randZ = gsap.utils.random(-10, -4, .1, true);
+const randZ = gsap.utils.random(-12, -7, .1, true);
 const xValues = {
   from: {
     left: randX,
@@ -35,12 +36,12 @@ const moveGhostTL = (ghost, mat) => {
   tl
   .set(ghost.position, {x: xValues.from[dir](), y: randY(), z:randZ()})
   .set(ghost.rotation, {y: 0})
-  .to(mat, {opacity: .8, duration: .6, ease: 'power2.In'}, 0)
+  .to(mat, {opacity: 1, duration: .6, ease: 'power2.In'}, 0)
   .to(ghost.position, {
     duration: 'random(1.7, 3)',
     x: xValues.to[dir],
     y: 'random(1, 4)',
-    z: 'random(0, 1.5)',
+    z: 'random(1, 2)',
     ease: 'none',
   }, 0)
   .to(ghost.rotation, {
@@ -85,8 +86,8 @@ export default function Ghost({color = 'green'}) {
   const gRef = React.useRef();
   const tPos = React.useRef([0, 0]);
   const [wasHit, setWasHit] = React.useState(false);
-  const {nodes} = useGLTF('/g1.glb');
-  const mcTex = useTexture('/gmatcap.png');
+  const {nodes} = useGLTF('/g2.glb');
+  const mcTex = useTexture('/gmatcap.webp');
 
   const { isHit, setIsHit, trapped, addTrapped, removeTrapped, addGhost, trapBB } = useGameStore(
     useShallow((s) => ({ 
@@ -164,9 +165,21 @@ export default function Ghost({color = 'green'}) {
 
   React.useEffect(() => {
     if (isThisHit) {
-      matRef.current.color.set('red');
+      matRef.current.color.set('#ff8300');
+      matRef.current.distort = .5;
+      matRef.current.speed = .12;
+      matRef.current.scale = 3.3;
+      const {current: g} = gRef;
+      if (g.scale.x < 0) {
+        g.rotation.y = 1;
+      } else {
+        g.rotation.y = -1;
+      }
     } else {
       matRef.current.color.set(color);
+      matRef.current.distort = .35;
+      matRef.current.speed = .1;
+      matRef.current.scale = 1.3;
     }
   }, [isThisHit, color]);
 
@@ -186,18 +199,33 @@ export default function Ghost({color = 'green'}) {
     <mesh ref={gRef} position-x={-30}>
       <planeGeometry args={[1.1, 1.1, 1.1]} />
       <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-      <mesh ref={meshRef} geometry={nodes.Ghost1.geometry} position-z={-.01}>        
+      <mesh ref={meshRef} geometry={nodes.g2.geometry} position-z={-.01}>
+        {/*  
         <meshMatcapMaterial 
           color={color} 
           ref={matRef} 
           blending={AdditiveBlending} 
           transparent 
           opacity={0}
-          matcap={mcTex} 
+          matcap={mcTex}
+        />
+        */}
+        
+        <MeshDistortMat
+          ref={matRef} 
+          distort={0.35}
+          speed={0.1}
+          scale={1.3}
+          radius={1}
+          color={color}
+          blending={AdditiveBlending} 
+          transparent 
+          opacity={0}
+          matcap={mcTex}
         />
       </mesh>
     </mesh>
   )
 }
 
-useGLTF.preload('/g1.glb');
+useGLTF.preload('/g2.glb');

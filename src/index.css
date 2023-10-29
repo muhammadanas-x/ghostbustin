@@ -1,5 +1,13 @@
+@font-face {
+  font-family: "staypuft";
+  src:
+    url("/StayPuft.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
-  font-family: Creepster, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: staypuft, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -32,7 +40,7 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 4rem;
   line-height: 1.1;
 }
 

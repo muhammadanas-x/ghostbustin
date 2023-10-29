@@ -12,6 +12,7 @@ const uniforms = {
 
 const vertex = /*glsl*/`
 varying vec2 vUv;
+varying vec4 vColor;
 uniform float uTime;
 
 float random(vec2 co){
@@ -21,6 +22,7 @@ float random(vec2 co){
 void main() {
   float t = uTime * 13.;
   vUv = uv;
+  vColor = color;
   vec3 pos = position;
   float fallOff = smoothstep(10., 9.9, pos.z) * smoothstep(0., 1., pos.z);
   pos.x += sin(pos.z * 1.2 + t) * 0.02 * fallOff;
@@ -36,6 +38,7 @@ void main() {
 `;
 
 const fragment = /*glsl*/`
+varying vec4 vColor;
 varying vec2 vUv;
 uniform float uTime;
 uniform vec3 uColor;
@@ -44,7 +47,7 @@ uniform float uBrightness;
 void main() {
   float t = uTime * 0.15;  
   
-  gl_FragColor = vec4(uColor * uBrightness, 1.);
+  gl_FragColor = vec4(vColor * uBrightness);
 
   //gl_FragColor = vec4 (vec3(1. - vUv.x), 1.0);
   #include <colorspace_fragment> 

@@ -1,3 +1,4 @@
+import { EffectComposer } from "@react-three/postprocessing";
 import Background from "./Background";
 import Ghost from "./Ghost";
 import ProtonGun from "./ProtonGun";
@@ -11,11 +12,16 @@ export default function Gb() {
       <directionalLight position={[-2, 2, 0]} intensity={1.4} castShadow={false} />
 
       <ProtonGun />
-      <Ghost />
-      <Ghost color="yellow" />
-      <Ghost color="blue" />
+      <Ghost color="#10ff00" />
+      <Ghost color="#10ff00" />
+      <Ghost color="#ccff00" />
       <Trap />
       <Background />
     </>
   )
 }
+
+TODO:
+Instructions
+Improve ghost tethered Effect 
+Game over
