@@ -3,6 +3,7 @@ import './App.css';
 import Gb from './Gb';
 import { Hud } from './Hud';
 import { Intro } from './Intro';
+import { GameOver } from "./GameOver";
 import { Suspense } from 'react';
 import { Effects } from './Effects';
 
@@ -12,17 +13,18 @@ function App() {
 
   return (
     <>
-    <Canvas 
-      camera={camProps}
-      dpr={1}
-    >
-      <Suspense fallback={null}>
-        <Effects />
-        <Gb />
-      </Suspense>
-    </Canvas>
-    <Hud />
-    <Intro />
+      <Canvas 
+        camera={camProps}
+        dpr={1}
+      >
+        <Suspense fallback={null}>
+          <Effects />
+          <Gb />
+        </Suspense>
+      </Canvas>
+      <Hud />
+      <Intro />
+      <GameOver />
     </>
   )
 }

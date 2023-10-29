@@ -33,6 +33,9 @@ export const useGameStore = create((set) => ({
 
   introDone: false,
   setIntroDone: (introDone) => set({ introDone }),
+
+  gameOver: false,
+  setGameOver: (gameOver) => set({ gameOver }),
 }));
 
 export const useTargetStore = create(subscribeWithSelector((set) => ({

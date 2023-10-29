@@ -10,7 +10,7 @@ export function Hud() {
   ));
 
   return (
-    <div className="hud">
+    <div className="hud overlay">
       <div className='score'>
         <img src="/noghost.svg" width="50" height="50" alt="" />
         &nbsp;{trappedTotal}

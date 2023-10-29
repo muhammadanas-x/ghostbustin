@@ -7,7 +7,7 @@
   overflow: hidden;
 }
 
-.hud, .intro {
+.overlay {
   position: absolute;
   top: 0;
   right: 0;
@@ -15,12 +15,17 @@
   left: 0;  
 }
 
-.intro {
+.intro, .game-over {
   background: #000;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.game-over {
+  background: transparent;
+  visibility: hidden;
 }
 
 h1 {

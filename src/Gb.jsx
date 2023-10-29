@@ -1,4 +1,3 @@
-import { EffectComposer } from "@react-three/postprocessing";
 import Background from "./Background";
 import Ghost from "./Ghost";
 import ProtonGun from "./ProtonGun";
@@ -20,3 +19,8 @@ export default function Gb() {
     </>
   )
 }
+
+/*
+TODO:
+Instructions
+ */

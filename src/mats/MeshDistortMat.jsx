@@ -121,6 +121,7 @@ class DistortMaterialImpl extends MeshMatcapMaterial {
     this._radius = { value: 1 };
     this._scale = { value: 1 };
     this._speed = { value: 1 };
+    this._glow = { value: 1 };
   }
 
   onBeforeCompile(shader) {
@@ -129,6 +130,7 @@ class DistortMaterialImpl extends MeshMatcapMaterial {
     shader.uniforms.distort = this._distort;
     shader.uniforms.scale = this._scale;
     shader.uniforms.speed = this._speed;
+    shader.uniforms.glow = this._glow;
 
     shader.vertexShader = `
       uniform float time;
@@ -137,12 +139,14 @@ class DistortMaterialImpl extends MeshMatcapMaterial {
       uniform float scale;
       uniform float speed;
       ${distort}
+      varying vec3 vObjCoords;
       ${shader.vertexShader}
     `;
     shader.vertexShader = shader.vertexShader.replace(
       '#include <beginnormal_vertex>',
       `
         vec3 displaced = displace(position);
+        vObjCoords = displaced;
         vec3 objectNormal = recalcNormals(displaced);
         `,
     );
@@ -151,6 +155,29 @@ class DistortMaterialImpl extends MeshMatcapMaterial {
       '#include <begin_vertex>',
       `
         vec3 transformed = displaced;
+        `,
+    );
+
+    shader.fragmentShader = `
+      uniform float time;
+      uniform float glow;
+      varying vec3 vObjCoords;
+      ${shader.fragmentShader}
+    `
+
+    shader.fragmentShader = shader.fragmentShader.replace(
+      'vec3 outgoingLight = diffuseColor.rgb * matcapColor.rgb;',
+      `
+        vec3 outgoingLight = diffuseColor.rgb * matcapColor.rgb;
+        outgoingLight *= 3.;
+
+        float pScale = 0.4;
+        float val = vObjCoords.y;
+        val += sin(vObjCoords.x * 10. + time * 3.) * .2;
+        float pp = pScale - abs( mod( abs(val), (2.*pScale) ) - pScale );
+
+        outgoingLight = mix(outgoingLight, diffuseColor.rgb, pow(vObjCoords.z, 2.));
+        outgoingLight += outgoingLight * pp * glow;        
         `,
     );
   }
@@ -194,12 +221,20 @@ class DistortMaterialImpl extends MeshMatcapMaterial {
   set speed(v) {
     this._speed.value = v;
   }
+
+  get glow() {
+    return this._glow.value;
+  }
+
+  set glow(v) {
+    this._glow.value = v;
+  }
 }
 
 
 export const MeshDistortMat = React.forwardRef(
   (
-    { speed = 1, distort, radius, scale, ...props },
+    { speed = 1, distort, radius, scale, glow, ...props },
     ref,
   ) => {
     const [material] = React.useState(() => new DistortMaterialImpl());
@@ -215,6 +250,7 @@ export const MeshDistortMat = React.forwardRef(
         radius={radius}
         scale={scale}
         speed={speed}
+        glow={glow}
         attach="material"
         {...props}
       />

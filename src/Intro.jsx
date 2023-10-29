@@ -23,7 +23,6 @@ export function Intro() {
       window.AudioContext = window.webkitAudioContext;
     }
     const audioContext = new AudioContext();
-    console.log('audioContext', audioContext);
     setAudioCtx(audioContext);
 
     const audioElement = new Audio('/shootloop.mp3');
@@ -57,7 +56,7 @@ export function Intro() {
   }
 
   return (
-    <div className="intro" ref={pRef}>      
+    <div className="intro overlay" ref={pRef}>      
       <img src="/noghost.svg" width="50" height="50" alt="" className="intro-img" />
       <h1>Ghostbustin &rsquo;</h1>
       <button className="start-btn" onClick={start}>Play</button>

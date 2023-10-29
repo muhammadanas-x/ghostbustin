@@ -28,7 +28,7 @@ export default function ProtonGun() {
   emisTex.colorSpace = SRGBColorSpace;
   emisTex.flipY = false;
   
-  const { isShooting, setIsShooting, isHit, setIsHit, ghosts, trapped, audioCtx, audioElement, introDone } = useGameStore(
+  const { setGameOver, gameOver, isShooting, setIsShooting, isHit, setIsHit, ghosts, trapped, audioCtx, audioElement, introDone } = useGameStore(
     useShallow((s) => ({ 
       isShooting: s.isShooting, 
       setIsShooting: s.setIsShooting,
@@ -39,6 +39,8 @@ export default function ProtonGun() {
       audioCtx: s.audioCtx,
       audioElement: s.audioElement,
       introDone: s.introDone,
+      setGameOver: s.setGameOver,
+      gameOver: s.gameOver,
     })
   ));
 
@@ -64,7 +66,6 @@ export default function ProtonGun() {
 
   React.useEffect(() => {
     if (introDone) {
-      console.log('intro done', guageRef.current.scale);
       gsap.to(guageRef.current.scale, {
         duration: 1,
         y: 1,
@@ -80,22 +81,33 @@ export default function ProtonGun() {
   const rayCaster = React.useMemo(() => new Raycaster(), []);
 
   React.useEffect(() => {
-
+  
     const startShoot = (e) => {
       e.stopImmediatePropagation();
       beamRef.current.visible = true;
       playSample(audioCtx, buffers.shoot);
       audioElement.play();
+      console.log('start shoot');
       setIsShooting(true);
     }
 
     const endShoot = () => {
       playSample(audioCtx, buffers.powerDown);
       audioElement.pause();
+      // Backup pause: hack to fix audio bug
+      setTimeout(() => {
+        audioElement.pause();
+      }, 50);
+      console.log('end shoot');
       beamRef.current.visible = false;
       setIsShooting(false);
       setIsHit(false);
-    }     
+    }
+    
+    if (gameOver) {
+      endShoot() 
+      return;
+    }
     
     gl.domElement.addEventListener('pointerdown', startShoot);
     gl.domElement.addEventListener('pointerup', endShoot);
@@ -104,7 +116,7 @@ export default function ProtonGun() {
       gl.domElement.removeEventListener('pointerdown', startShoot);
       gl.domElement.removeEventListener('pointerup', endShoot);
     }
-  }, [setIsShooting, setIsHit, audioCtx, buffers, audioElement, gl]);
+  }, [setIsShooting, setIsHit, audioCtx, buffers, audioElement, gl, gameOver]);
 
   useFrame(({ pointer, viewport }, delta) => {
     matRef.current.uniforms.uTime.value += delta;
@@ -116,7 +128,7 @@ export default function ProtonGun() {
     if (isShooting) {
       const power = guageRef.current.scale.y;
       if (power <= 0) {
-        // set game over
+        setGameOver(true)
       }
       guageRef.current.scale.y = Math.max(0, power - (delta * .05));
       

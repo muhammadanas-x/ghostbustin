@@ -166,6 +166,7 @@ export default function Ghost({color = 'green'}) {
   React.useEffect(() => {
     if (isThisHit) {
       matRef.current.color.set('#ff8300');
+      matRef.current.glow = 20;
       matRef.current.distort = .5;
       matRef.current.speed = .12;
       matRef.current.scale = 3.3;
@@ -177,6 +178,7 @@ export default function Ghost({color = 'green'}) {
       }
     } else {
       matRef.current.color.set(color);
+      matRef.current.glow = 3;
       matRef.current.distort = .35;
       matRef.current.speed = .1;
       matRef.current.scale = 1.3;
@@ -188,7 +190,6 @@ export default function Ghost({color = 'green'}) {
     if (!isThisHit || isThisTrapped) return;
     damp3(gRef.current.position, [tPos.current[0], tPos.current[1], 0], 1, delta);
     if (trapBB && trapBB.containsPoint(gRef.current.position)) {
-      matRef.current.color.set('purple');
       setWasHit(false);
       setIsHit(false);
       addTrapped(gRef.current);
@@ -217,6 +218,7 @@ export default function Ghost({color = 'green'}) {
           speed={0.1}
           scale={1.3}
           radius={1}
+          glow={3}
           color={color}
           blending={AdditiveBlending} 
           transparent 
