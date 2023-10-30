@@ -47,7 +47,7 @@ export default function ProtonGun() {
   React.useEffect(() => {
     if (audioCtx) {
       const loadAudioFile = async () => {
-        const buf = await loadAudio(audioCtx, '/shoot.mp3');
+        const buf = await loadAudio(audioCtx, '/shoot.m4a');
         setBuffers((s) => ({...s, shoot: buf}));
       };
       loadAudioFile();

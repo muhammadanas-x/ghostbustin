@@ -4,6 +4,7 @@ import Gb from './Gb';
 import { Hud } from './Hud';
 import { Intro } from './Intro';
 import { GameOver } from "./GameOver";
+import { Help } from "./Help";
 import { Suspense } from 'react';
 import { Effects } from './Effects';
 
@@ -25,6 +26,7 @@ function App() {
       <Hud />
       <Intro />
       <GameOver />
+      <Help />
     </>
   )
 }

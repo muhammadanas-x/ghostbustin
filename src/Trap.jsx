@@ -81,7 +81,7 @@ export default function Trap() {
   React.useEffect(() => {
     if (audioCtx) {
       const loadAudioFile = async () => {
-        const buf = await loadAudio(audioCtx, '/close.mp3');
+        const buf = await loadAudio(audioCtx, '/close2.m4a');
         setBuffers((s) => ({...s, trap: buf}));
       };
       loadAudioFile();
@@ -91,7 +91,7 @@ export default function Trap() {
   React.useEffect(() => {
     if (audioCtx) {
       const loadAudioFile = async () => {
-        const buf = await loadAudio(audioCtx, '/open.mp3');
+        const buf = await loadAudio(audioCtx, '/open.m4a');
         setBuffers((s) => ({...s, open: buf}));
       };
       loadAudioFile();
@@ -105,7 +105,7 @@ export default function Trap() {
     if (trappedTotal > 0) {
       setTimeout(() => {
         playSample(audioCtx, buffers.trap);
-      }, 600);
+      }, 650);
       if (tlRef.current) tlRef.current.kill();
       tlRef.current = returnTrapTL(gRef.current, ld, rd, mat, () => {
         setTrapBB(null);

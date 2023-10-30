@@ -179,7 +179,7 @@ export default function Ghost({color = 'green'}) {
     } else {
       matRef.current.color.set(color);
       matRef.current.glow = 3;
-      matRef.current.distort = .35;
+      matRef.current.distort = .4;
       matRef.current.speed = .1;
       matRef.current.scale = 1.3;
     }
@@ -214,7 +214,7 @@ export default function Ghost({color = 'green'}) {
         
         <MeshDistortMat
           ref={matRef} 
-          distort={0.35}
+          distort={0.4}
           speed={0.1}
           scale={1.3}
           radius={1}

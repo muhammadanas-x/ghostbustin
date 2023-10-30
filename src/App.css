@@ -23,20 +23,24 @@
   flex-direction: column;
 }
 
+
 .game-over {
   background: transparent;
   visibility: hidden;
+  user-select: none;
 }
 
 h1 {
   font-size: 4rem;
   text-transform: uppercase;
+  text-align: center;
 }
 
 .intro-img {
   width: 80%;
   height: auto;
   max-width: 350px;
+  margin-top: -70px;
 }
 
 .hud {
@@ -58,4 +62,43 @@ h1 {
   text-transform: uppercase;
 }
 
+.help-button {
+  font-size: 3rem;
+  position: absolute;
+  top: 10px;
+  right: 40px;
+  cursor: pointer;
 
+  &:hover + .help-window {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.help {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  user-select: none;
+}
+
+.help-window {
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', sans-serif;
+  position: absolute;
+  top: 60px;
+  right: 80px;
+  width: 300px;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.25s, opacity 0.4s;
+  background: rgb(16, 16, 16);
+  padding: 20px 30px;
+  border-radius: 30px;
+}
+
+.ghost {
+  opacity: 0;
+  transform: translateY(80px);
+}
