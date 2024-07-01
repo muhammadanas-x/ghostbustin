@@ -1,0 +1,18 @@
+diff --git a/node_modules/@react-three/postprocessing/dist/effects/Texture.js b/node_modules/@react-three/postprocessing/dist/effects/Texture.js
+index bc8efac..7e87bfa 100644
+--- a/node_modules/@react-three/postprocessing/dist/effects/Texture.js
++++ b/node_modules/@react-three/postprocessing/dist/effects/Texture.js
+@@ -2,11 +2,11 @@ import { jsx } from "react/jsx-runtime";
+ import { TextureEffect } from "postprocessing";
+ import { forwardRef, useLayoutEffect, useMemo } from "react";
+ import { useLoader } from "@react-three/fiber";
+-import { TextureLoader, sRGBEncoding, RepeatWrapping } from "three";
++import { TextureLoader, SRGBColorSpace, RepeatWrapping } from "three";
+ const Texture = forwardRef(function Texture2({ textureSrc, texture, ...props }, ref) {
+   const t = useLoader(TextureLoader, textureSrc);
+   useLayoutEffect(() => {
+-    t.encoding = sRGBEncoding;
++    t.encoding = SRGBColorSpace;
+     t.wrapS = t.wrapT = RepeatWrapping;
+   }, [t]);
+   const effect = useMemo(() => new TextureEffect({ ...props, texture: t || texture }), [props, t, texture]);
